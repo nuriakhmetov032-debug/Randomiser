@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Randomizer 2026</title>
+    <!-- Подключаем библиотеку для эффекта конфетти -->
+    <script src="cdn.jsdelivr.net"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.2);
+            --accent-1: #00f2fe;
+            --accent-2: #4facfe;
+            --accent-3: #f093fb;
+            --accent-4: #f5576c;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(79, 172, 254, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(240, 147, 251, 0.15) 0%, transparent 40%);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 40px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        h1 {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0 0 20px 0;
+        }
+
+        .display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .display.name-theme {
+            background: linear-gradient(to right, var(--accent-3), var(--accent-4));
+            -webkit-background-clip: text;
+        }
+
+        button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            background: #f8f9fa;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Анимация появления текста */
+        @keyframes reveal {
+            from { transform: translateY(20px) scale(0.8); opacity: 0; filter: blur(10px); }
+            to { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+        }
+
+        .animate-reveal {
+            animation: reveal 0.4s forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Объект</h1>
+        <div id="word-display" class="display">—</div>
+        <button onclick="generate('word')">Сгенерировать</button>
+    </div>
+
+    <div class="container">
+        <h1>Личность</h1>
+        <div id="name-display" class="display name-theme">—</div>
+        <button onclick="generate('name')">Выбрать имя</button>
+    </div>
+
+    <script>
+        const data = {
+            word: ["Резинка", "Заколка", "Карандаш", "Брелок", "Крышка", "Ластик", "Пряжа", "Железка"],
+            name: ["Камиль", "Назилэ", "Артем", "Карина"]
+        };
+
+        function generate(type) {
+            const display = document.getElementById(`${type}-display`);
+            const list = data[type];
+            const randomValue = list[Math.floor(Math.random() * list.length)];
+
+            // Сброс анимации
+            display.classList.remove('animate-reveal');
+            void display.offsetWidth; // Магия для перезапуска CSS анимации
+            
+            // Установка значения и запуск анимации
+            display.textContent = randomValue;
+            display.classList.add('animate-reveal');
+
+            // Запуск конфетти
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: type === 'word' ? 0.3 : 0.8 },
+                colors: type === 'word' ? ['#00f2fe', '#4facfe'] : ['#f093fb', '#f5576c']
+            });
+
+            // Легкая вибрация телефона (если поддерживается)
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(50);
+            }
+        }
+    </script>
+</body>
+</html>
